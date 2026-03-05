@@ -22,6 +22,7 @@ class ContainerYard:
         self.dim = (N, M, H)
         self.grid = [[[] for j in range(M)] for i in range(N)]
         self.connectedness = graph_things.DFSearch(self._neighbors)
+        self._update_reachable()
 
     def valid_coords(self, i, j):
         coords = i, j
@@ -34,13 +35,16 @@ class ContainerYard:
     def put(self, container, i, j):
         assert(self.can_put(i, j))
         self.grid[i][j].append(container)
+        self._update_reachable()
 
     def pop(self, i, j) -> Container:
         assert(self.can_pop(i,j))
-        return self.grid[i][j].pop()
+        res = self.grid[i][j].pop()
+        self._update_reachable()
+        return res
 
     def _can_lift(self, i, j):
-        return self.reachable(i, j + 1) or self.reachable(i, j - 1)
+        return self.reachable(i-1, j) or self.reachable(i+1, j)
 
     def can_put(self, i, j):
         return self.stack_height(i, j) < self.dim[2] and self._can_lift(i, j)
@@ -51,7 +55,7 @@ class ContainerYard:
     def is_empty(self, i, j):
         return self.stack_height(i, j) == 0
 
-    def _neighbors(self, *c):
+    def _neighbors(self, c):
         i, j = c
         adjacent = []
         for direction in [0, 1]:
@@ -92,8 +96,11 @@ class ContainerYard:
 
 if __name__ == '__main__':
     yard = ContainerYard()
+    for i in range(3):
+        yard.put(Container(),i,0)
     print(yard)
-    while True:
-        x,y = map(int,input().split())
-        yard.put(Container(), x, y)
-        print(yard)
+    for i in range(5):
+        print(yard.can_pop(i,0),yard.can_put(i,0))
+    for i in range(2,-1,-1):
+        yard.pop(i,0)
+    print(yard)
