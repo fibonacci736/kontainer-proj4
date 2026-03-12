@@ -1,13 +1,17 @@
 from copy import deepcopy
+from dataclasses import dataclass
 
-import graph_things
+from .graph_things import DFSearch
+
+@dataclass
 class Container:
     pass
 class ContainerYard:
+    EXTERNAL = (-1, -1)
     def __init__(self, N=6, M=5, H=1):
         self.dim = (N, M, H)
         self.grid = [[[] for j in range(M)] for i in range(N)]
-        self.connectedness = graph_things.DFSearch(self._neighbors)
+        self.connectedness = DFSearch(self._neighbors)
         self._update_reachable()
 
     def valid_coords(self, i, j):

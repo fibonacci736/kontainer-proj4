@@ -13,7 +13,5 @@ class DFSearch:
     def reset(self):
         self.reached = set()
 
-    def reachable(self,vertex):
+    def reachable(self, vertex):
         return vertex in self.reached
-
-
