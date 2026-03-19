@@ -4,6 +4,7 @@ from .event import Event, EventType
 from .yard import ContainerYard, Container
 
 
+
 @dataclass
 class Scenario:
     events: list[Event]
