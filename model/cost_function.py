@@ -1,5 +1,8 @@
-def cost_function(yard):
-    yard = [list(bay) for bay in yard] # make a copy
+from model.yard import Yard
+
+
+def cost_function(yard : Yard):
+    yard = yard.copy() # make a copy
     all_containers = []
     for i in yard:
         all_containers = all_containers + i
