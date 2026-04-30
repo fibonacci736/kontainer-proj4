@@ -13,11 +13,17 @@ class Bay(list[int]):
     def is_empty(self,i_stack):
         return not self[i_stack]
 
+    def __str__(self):
+        return ''.join([' ' if c==0 else str(c) for c in self])
+
+
     def is_accessible(self,i_stack):
-        if self.is_empty_bay() or i_stack in [0,self.N_stacks-1]:
+        if self.is_empty_bay():
             return True
+        left_empty = i_stack == 0 or self.is_empty(i_stack-1)
+        right_empty = i_stack == self.N_stacks-1 or self.is_empty(i_stack+1)
         #stack needs to be next to exactly 1 empty stack
-        return self.is_empty(i_stack-1) ^ self.is_empty(i_stack+1)
+        return  left_empty ^ right_empty
 
 class Yard(list[Bay]):
     def __init__(self,N_bays,N_stacks):
@@ -48,5 +54,10 @@ class Yard(list[Bay]):
         for i in range(self.N_bays):
             clone[i].extend(self[i])
         return clone
+
+    def __str__(self):
+        return ('----\n' +
+                '\n'.join([str(bay)for bay in self]) +
+                '\n----')
 
 
