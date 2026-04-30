@@ -17,12 +17,14 @@ class MoveAction:
     target: (int, int)
 
 
-class Agent:
-    def start(self, yard, events):
-        self.yard = yard
-        self.events = events
+@dataclass
+class StateDescription:
+    yard: ContainerYard
+    future: list[Event]
 
-    def step(self, event: Event) -> list[MoveAction]:
+
+class Agent:
+    def step(self, event: Event, observation: StateDescription) -> list[MoveAction]:
         raise NotImplementedError
 
 
@@ -37,18 +39,23 @@ class Model:
         self.yard: ContainerYard = self.scenario.yard.copy()
         events = self.scenario.events
         self.move_log = []
+        print(self.yard)
+        for t in range(len(events)):
+            self.process_event(t)
+            print(self.yard)
 
-        self.agent.start(self.yard, events)
-        for event in events:
-            self.process_event(event)
+    def process_event(self, event_index: int):
+        event = self.scenario.events[event_index]
 
-    def process_event(self, event: Event):
+        observation = StateDescription(self.yard.copy(),
+                                       self.scenario.events[event_index + 1:])
+
         done = False
-
-        for move in self.agent.step(event):
+        for move in self.agent.step(event, observation):
             self.move_log.append(move)
             if move.source == ContainerYard.EXTERNAL:
                 assert event.type == EventType.ARRIVAL, 'there is no new container to be placed'
+
                 self.yard.put(event.subject, *move.target)
                 done = True
             elif move.target == ContainerYard.EXTERNAL:
@@ -61,9 +68,12 @@ class Model:
                 self.yard.put(moving_container, *move.target)
 
         assert done, "failed to place or remove container"
+<<<<<<< Updated upstream
 
 
 if __name__ == '__main__':
     events = [Event(Container(), type=EventType.ARRIVAL) for i in range(10)]
     scenario = Scenario(events, ContainerYard())
     model = Model(scenario, agent=Agent())
+=======
+>>>>>>> Stashed changes

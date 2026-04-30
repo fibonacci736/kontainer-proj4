@@ -1,11 +1,19 @@
+import itertools
+import random
 from copy import deepcopy
 from dataclasses import dataclass
+from typing import Self
 
 from .graph_things import DFSearch
 
 @dataclass
 class Container:
-    pass
+    id : int = random.randint(0, 2**30)
+
+
+
+
+
 class ContainerYard:
     EXTERNAL = (-1, -1)
     def __init__(self, N=6, M=5, H=1):
@@ -58,6 +66,15 @@ class ContainerYard:
                 self.is_empty(*p)
                 ]
 
+    def find(self,container) -> tuple[int,int,int] | None:
+        N,M,_ = self.dim
+        for i,j in self.coords():
+            stack = self.grid[i][j]
+            if container in stack:
+                h = stack.index(container)
+                return i, j, h
+        return None
+
     def _update_reachable(self):
         self.connectedness.reset()
 
@@ -82,7 +99,14 @@ class ContainerYard:
             out += '\n'
         return out
 
-    def copy(self):
+    def copy(self) -> Self:
         new = ContainerYard(*self.dim)
         new.grid = deepcopy(self.grid)
+        return new
+
+    def coords(self):
+        N, M, _ = self.dim
+        for i in range(N):
+            for j in range(M):
+                yield i,j
 
