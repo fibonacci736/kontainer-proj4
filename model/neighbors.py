@@ -26,13 +26,17 @@ def feasible_neighbors(problem: list[int], solution: Yard):
                 yield solution.copy()
             swap(solution,l1, l2)  # restore original
 
-def random_feasible_neighbor(problem,solution):
-    solution = solution.copy()
+def random_feasible_swap(problem,solution):
     locs = list(solution.locations())
     N = len(locs)
     while True:
-        i,j = random.sample(list(range(N)),2)
-        swap(solution,locs[i],locs[j])
-        if feasible(problem,solution):
-            return solution
-        swap(solution,locs[i],locs[j])
+        i, j = random.sample(list(range(N)), 2)
+        swap(solution, locs[i], locs[j])
+        if feasible(problem, solution):
+            swap(solution, locs[i], locs[j])
+            return locs[i],locs[j]
+        swap(solution, locs[i], locs[j])
+def random_feasible_neighbor(problem,solution):
+    s = solution.copy()
+    swap(s,*random_feasible_swap(problem,solution))
+    return s

@@ -2,27 +2,15 @@ import math
 import random
 
 from model.cost_function import cost_function
+from model.local_search import random_feasible_solution
 from model.neighbors import random_feasible_neighbor
 from model.yard import Yard
 from testcases import Scenario
 import itertools
 
 
-def random_feasible_solution(yard_dim, arrival_order):
-    N_bays, N_stacks = yard_dim
-    yard = Yard(N_bays, N_stacks)
 
-    def available_spots():
-        for i, j in yard.locations():
-            bay = yard[i]
-            if bay.is_accessible(j) and bay.is_empty(j):
-                yield i, j
 
-    for container in arrival_order:
-        spots = list(available_spots())
-        i, j = random.choice(spots)
-        yard[i][j] = container
-    return yard
 
 #simulated annealing
 def solve(scenario : Scenario, seed=None,n_iter = 100, cooling_factor = 10):
@@ -59,6 +47,8 @@ def solve(scenario : Scenario, seed=None,n_iter = 100, cooling_factor = 10):
                 if Z_new < Z_best:
                     Z_best = Z_new
                     best = solution
+                    if Z_best == 0:
+                        return best
                 break
     return best
 

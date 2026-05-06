@@ -1,3 +1,6 @@
+from typing import Self
+
+
 class Bay(list[int]):
     def __init__(self,N_stacks):
         super().__init__(0 for i in range(N_stacks))
@@ -33,6 +36,10 @@ class Yard(list[Bay]):
     def N_bays(self):
         return len(self)
 
+    def get(self,loc):
+        x,y = loc
+        return self[x][y]
+
     @classmethod
     def from_list(cls, yard_list):
         N_bays = len(yard_list)
@@ -49,7 +56,7 @@ class Yard(list[Bay]):
     def __hash__(self):
         summary = tuple( self[i][j] for i,j in self.locations() )
         return hash(summary)
-    def copy(self):
+    def copy(self) -> Self:
         clone = Yard(self.N_bays,0)
         for i in range(self.N_bays):
             clone[i].extend(self[i])
