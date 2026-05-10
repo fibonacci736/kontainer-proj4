@@ -13,7 +13,6 @@ def random_scenario(yard_dim,N_containers,N_destinations):
     destinations = [i+1 for i in range(N_destinations)]
     containers = random.choices(destinations,k=N_containers)
     return Scenario(yard_dim,containers)
-random.seed(12345)
 small_scenarios = [
     Scenario((1,9),[1,2,3,4,5,6,7,8,9]),
     Scenario((2,9),[1,2,3,4,5,6,7,8,9]),
